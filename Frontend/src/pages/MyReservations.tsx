@@ -38,12 +38,7 @@ const MyReservations = () => {
       if (!token) return;
 
       try {
-        const response = await axios.get("/user/reservations", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get("/user/reservations");
         setReservations(response.data);
       } catch (error) {
         console.error("Error fetching reservations:", error);
@@ -62,11 +57,7 @@ const MyReservations = () => {
     if (!token) return;
 
     try {
-      await axios.delete(`/booking/${selectedReservationId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(`/booking/${selectedReservationId}`);
 
       setReservations((prev) =>
         prev.filter((r) => r._id !== selectedReservationId)

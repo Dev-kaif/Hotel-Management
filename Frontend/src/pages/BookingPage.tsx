@@ -68,12 +68,6 @@ const BookingPage = () => {
           email,
           phone,
           specialRequests,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
         }
       );
     
