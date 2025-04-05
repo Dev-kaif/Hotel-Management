@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import axios from "axios";
+import axios from "@/api/axios";
 
 const Navbar = () => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [user, setUser] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -17,23 +18,17 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     const updateUser = async () => {
       const token = localStorage.getItem("token");
-  
+
       if (token) {
         try {
-          const { data } = await axios.get("/user",{        
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` 
-          }});
-          setUser(data);
+          const { data } = await axios.get("/user");
+          setUser(data.name);
         } catch (error) {
           setUser(null);
         }
@@ -41,21 +36,17 @@ const Navbar = () => {
         setUser(null);
       }
     };
-  
-    updateUser(); // Fetch user on mount
-  
+
+    updateUser();
+
     const handleStorageChange = async () => {
-      await updateUser(); // Update user on localStorage change
+      await updateUser();
     };
-  
+
     window.addEventListener("storage", handleStorageChange);
-  
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
-  
-  
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -70,7 +61,6 @@ const Navbar = () => {
           <span className="text-foreground">Haven</span>
         </Link>
 
-        {/* Mobile menu button */}
         <button
           className="lg:hidden text-foreground"
           onClick={() => setIsOpen(!isOpen)}
@@ -78,22 +68,20 @@ const Navbar = () => {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-8">
           <NavLinks location={location} />
           <div className="flex space-x-3">
             {user ? (
               <div className="relative">
                 <button
-                  className="flex flex-col items-center"
+                  className="flex items-center space-x-3 group"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
-                  <User
-                    size={28}
-                    className="text-gold hover:text-gold-dark transition"
-                  />
-                  <span className="text-sm text-foreground mt-1">
-                    {user.username}
+                  <div className="w-10 h-10 rounded-full bg-gold text-black flex items-center justify-center font-semibold text-lg shadow-md group-hover:scale-105 transition-transform">
+                    {user?.[0]?.toUpperCase() ?? "U"}
+                  </div>
+                  <span className="text-sm text-foreground font-medium group-hover:text-gold transition">
+                    {user}
                   </span>
                 </button>
 
@@ -125,8 +113,8 @@ const Navbar = () => {
                     </Link>
                     <button
                       onClick={() => {
-                        localStorage.removeItem("token"); // Remove token from localStorage
-                        window.location.href = "/"; // Redirect to main page
+                        localStorage.removeItem("token");
+                        window.location.href = "/";
                       }}
                       className="w-full mt-2 bg-gold text-black hover:bg-gold-dark rounded-lg py-2 transition"
                     >
@@ -155,7 +143,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -193,8 +181,8 @@ const Navbar = () => {
                     </Link>
                     <button
                       onClick={() => {
-                        localStorage.removeItem("token"); // Remove token from localStorage
-                        window.location.href = "/"; // Redirect to main page
+                        localStorage.removeItem("token");
+                        window.location.href = "/";
                       }}
                       className="w-full mt-2 bg-gold text-black hover:bg-gold-dark rounded-lg py-2 transition"
                     >
