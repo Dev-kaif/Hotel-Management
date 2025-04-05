@@ -44,7 +44,7 @@ const SignupPage = () => {
       
       // Optionally store the token
       localStorage.setItem('token', response.data.token);
-      
+      window.dispatchEvent(new Event('storage'));
       navigate('/booking');
     } catch (error) {
       setLoading(false);
