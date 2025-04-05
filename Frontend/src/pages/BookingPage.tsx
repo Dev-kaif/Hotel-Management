@@ -56,21 +56,20 @@ const BookingPage = () => {
     }
   
     setLoading(true);
-    
+  
     try {
-      const res = await axios.post(
-        "/booking",
-        {
-          date: date.toISOString().split("T")[0],
-          time,
-          guests,
-          name,
-          email,
-          phone,
-          specialRequests,
-        }
-      );
-    
+      const formattedDate = format(date, 'yyyy-MM-dd'); // <-- FIX HERE
+      
+      const res = await axios.post("/booking", {
+        date: formattedDate,
+        time,
+        guests,
+        name,
+        email,
+        phone,
+        specialRequests,
+      });
+  
       setSubmitted(true);
       toast({
         title: "Success!",
@@ -84,8 +83,8 @@ const BookingPage = () => {
     } finally {
       setLoading(false);
     }
-    
   };
+  
   
   
   const handleNewBooking = () => {

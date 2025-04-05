@@ -7,14 +7,18 @@ import { Calendar, Users, MessageSquare } from "lucide-react";
 import CancelModal from "@/components/Cancle";
 import { Link } from "react-router-dom";
 
-
 interface Reservation {
   _id: string;
+  user: string;
+  name: string;
+  email: string;
+  phone: string;
   date: string;
   time: string;
   guests: number;
   specialRequests?: string;
 }
+
 
 const formatDate = (isoString: string) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -30,7 +34,9 @@ const MyReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [selectedReservationId, setSelectedReservationId] = useState<string | null>(null);
+  const [selectedReservationId, setSelectedReservationId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -49,6 +55,7 @@ const MyReservations = () => {
 
     fetchReservations();
   }, []);
+  console.log(reservations);
 
   const handleCancel = async () => {
     if (!selectedReservationId) return;
@@ -103,15 +110,14 @@ const MyReservations = () => {
             <p className="text-white text-xl font-medium mb-6">
               You have no reservations yet.
             </p>
-            <Link to={'/booking'}>
-            <Button
-              variant="default"
-              className="bg-gold text-black hover:bg-gold-dark px-6 py-3 text-lg"
+            <Link to={"/booking"}>
+              <Button
+                variant="default"
+                className="bg-gold text-black hover:bg-gold-dark px-6 py-3 text-lg"
               >
-              Book Now
-            </Button>
+                Book Now
+              </Button>
             </Link>
-
           </div>
         ) : (
           <motion.div
@@ -126,24 +132,58 @@ const MyReservations = () => {
                 className="border border-gold bg-background/80 backdrop-blur-lg shadow-lg rounded-2xl overflow-hidden w-full max-w-sm"
               >
                 <CardContent className="flex flex-col space-y-4 p-6">
-                  <div className="flex items-center space-x-2 text-gold font-semibold text-lg">
-                    <Calendar size={20} />
-                    <span>{formatDate(reservation.date)}</span>
+                  {/* Date and Time */}
+                  <div className="flex flex-col">
+                    <div className="flex items-center space-x-2 text-gold font-semibold text-lg">
+                      <Calendar size={20} />
+                      <span>{formatDate(reservation.date)}</span>
+                    </div>
+                    <div className="text-muted-foreground text-sm ml-7">
+                      {reservation.time}
+                    </div>
                   </div>
+
+                  {/* Guests */}
                   <div className="flex items-center space-x-2 text-foreground">
                     <Users size={20} />
-                    <span>{reservation.guests} Guests</span>
+                    <span>
+                      {reservation.guests}{" "}
+                      {reservation.guests === 1 ? "Guest" : "Guests"}
+                    </span>
                   </div>
+
+                  {/* Special Requests */}
                   {reservation.specialRequests && (
-                    <div className="flex items-center space-x-2 text-muted-foreground italic">
-                      <MessageSquare size={20} />
+                    <div className="flex items-start space-x-2 text-muted-foreground italic">
+                      <MessageSquare size={20} className="mt-0.5" />
                       <span>{reservation.specialRequests}</span>
                     </div>
                   )}
 
+                  {/* Contact Info - Optional */}
+                  {reservation.name && (
+                    <div className="pt-2 text-sm text-muted-foreground">
+                      <p>
+                        <strong>Name:</strong> {reservation.name}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {reservation.email}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {reservation.phone}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Reservation ID */}
+                  <div className="text-xs text-right text-muted-foreground pt-2">
+                    ID: {reservation._id.slice(-6).toUpperCase()}
+                  </div>
+
+                  {/* Cancel Button */}
                   <Button
                     variant="outline"
-                    className="mt-6 w-full border-gold text-gold hover:bg-gold hover:text-black transition-all"
+                    className="mt-4 w-full border-gold text-gold hover:bg-gold hover:text-black transition-all"
                     onClick={() => {
                       setSelectedReservationId(reservation._id);
                       setShowModal(true);
