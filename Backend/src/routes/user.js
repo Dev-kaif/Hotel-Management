@@ -6,12 +6,19 @@ const { Booking } = require('../models/BookingModel');
 
 // Route to get logged-in user's info
 router.get('/', authMiddleware, async (req, res) => {
+  
   try {
-    const user = await User.findById(req.user.id).select('username');
+    const user = await User.findById(req.user.id).select('name');
+    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ name: user.name });
+    res.json({
+      id: req.user.id,   
+      name: user.name,
+    });
+
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
