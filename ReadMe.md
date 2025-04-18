@@ -1,8 +1,3 @@
-Sure! Here's the full `README.md` file with the markdown syntax ready to copy or save as `README.md` in your root directory:
-
----
-
-```markdown
 # 🍽️ Restaurant Reservation System
 
 A sleek and modern full-stack reservation system for restaurants. Users can book, view, and cancel reservations with a beautiful UI and secure backend.
@@ -132,20 +127,4 @@ This project was built to streamline restaurant reservations with a clean UI and
 
 ---
 
-## 📬 Contact
 
-Have feedback or ideas? Reach out!
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: yourname@example.com
-
----
-
-## 🪪 License
-
-MIT License
-```
-
----
-
-Let me know if you want me to update anything with your actual GitHub repo URL, email, or add deployment instructions (like Vercel or Render).
